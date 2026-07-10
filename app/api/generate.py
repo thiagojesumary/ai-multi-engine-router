@@ -3,7 +3,11 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import ValidationError
 
 from app.core.settings import get_settings
+from app.providers.model_selector import ModelSelector
 from app.providers.openrouter import OpenRouterProvider
+from app.providers.provider_selector import ProviderSelector
+from app.providers.registry import ProviderRegistry
+from app.router.engine import RouterEngine
 from app.schemas.request import GenerationRequest
 from app.schemas.response import GenerationResponse
 from app.services.generation import GenerationService
@@ -24,23 +28,45 @@ async def generate(
 ) -> GenerationResponse:
     try:
         settings = get_settings()
-        provider = OpenRouterProvider(settings)
-        service = GenerationService(provider, settings)
+
+        registry = ProviderRegistry(
+            providers=[
+                OpenRouterProvider(settings),
+            ]
+        )
+
+        provider_selector = ProviderSelector(
+            registry=registry,
+            default_provider="openrouter",
+        )
+
+        model_selector = ModelSelector(settings)
+
+        router_engine = RouterEngine(
+            provider_selector=provider_selector,
+            model_selector=model_selector,
+        )
+
+        service = GenerationService(
+            router_engine=router_engine,
+            settings=settings,
+        )
 
         return await service.generate(request)
 
     except ValidationError as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Application configuration is invalid or OPENROUTER_API_KEY is missing.",
+            detail="Application configuration is invalid.",
         ) from exc
 
     except httpx.HTTPStatusError as exc:
-        upstream_status = exc.response.status_code
-
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"OpenRouter returned HTTP {upstream_status}.",
+            detail=(
+                f"OpenRouter returned HTTP "
+                f"{exc.response.status_code}."
+            ),
         ) from exc
 
     except httpx.RequestError as exc:
@@ -52,5 +78,5 @@ async def generate(
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Generation request failed: {type(exc).__name__}.",
+            detail=f"Generation failed: {type(exc).__name__}.",
         ) from exc

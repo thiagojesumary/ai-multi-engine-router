@@ -1,7 +1,7 @@
 from time import perf_counter
 
 from app.core.settings import Settings
-from app.providers.base import AIProvider
+from app.router.engine import RouterEngine
 from app.schemas.request import GenerationRequest
 from app.schemas.response import GenerationResponse
 
@@ -9,30 +9,33 @@ from app.schemas.response import GenerationResponse
 class GenerationService:
     def __init__(
         self,
-        provider: AIProvider,
+        router_engine: RouterEngine,
         settings: Settings,
     ) -> None:
-        self._provider = provider
+        self._router_engine = router_engine
         self._settings = settings
 
     async def generate(
         self,
         request: GenerationRequest,
     ) -> GenerationResponse:
-        primary_model = request.model or self._settings.default_model
+        decision = self._router_engine.route(request)
+
         started_at = perf_counter()
 
         try:
-            content = await self._provider.generate(
+            content = await decision.provider.generate(
                 request=request,
-                model=primary_model,
+                model=decision.model,
             )
 
-            latency_ms = int((perf_counter() - started_at) * 1000)
+            latency_ms = int(
+                (perf_counter() - started_at) * 1000
+            )
 
             return GenerationResponse(
-                provider=self._provider.name,
-                model=primary_model,
+                provider=decision.provider.name,
+                model=decision.model,
                 latency_ms=latency_ms,
                 fallback=False,
                 response=content,
@@ -41,20 +44,22 @@ class GenerationService:
         except Exception:
             fallback_model = self._settings.fallback_model
 
-            if fallback_model == primary_model:
+            if fallback_model == decision.model:
                 raise
 
             fallback_started_at = perf_counter()
 
-            content = await self._provider.generate(
+            content = await decision.provider.generate(
                 request=request,
                 model=fallback_model,
             )
 
-            latency_ms = int((perf_counter() - fallback_started_at) * 1000)
+            latency_ms = int(
+                (perf_counter() - fallback_started_at) * 1000
+            )
 
             return GenerationResponse(
-                provider=self._provider.name,
+                provider=decision.provider.name,
                 model=fallback_model,
                 latency_ms=latency_ms,
                 fallback=True,

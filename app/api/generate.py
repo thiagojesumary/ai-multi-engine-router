@@ -40,7 +40,7 @@ async def generate(
             default_provider="openrouter",
         )
 
-        model_selector = ModelSelector(settings)
+        model_selector = ModelSelector()
 
         router_engine = RouterEngine(
             provider_selector=provider_selector,

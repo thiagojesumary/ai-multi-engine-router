@@ -1,0 +1,22 @@
+{
+  "general": {
+    "provider": "openrouter",
+    "model": "openrouter/free"
+  },
+  "analysis": {
+    "provider": "openrouter",
+    "model": "openrouter/free"
+  },
+  "summarization": {
+    "provider": "openrouter",
+    "model": "openrouter/free"
+  },
+  "generation": {
+    "provider": "openrouter",
+    "model": "openrouter/free"
+  },
+  "reasoning": {
+    "provider": "openrouter",
+    "model": "openrouter/free"
+  }
+}

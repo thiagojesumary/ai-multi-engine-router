@@ -1,24 +1,41 @@
-from app.core.settings import Settings
-from app.schemas.request import GenerationRequest, TaskType
+import json
+from pathlib import Path
+
+from app.schemas.request import GenerationRequest
 
 
 class ModelSelector:
-    def __init__(self, settings: Settings) -> None:
-        self._settings = settings
+    def __init__(
+        self,
+        routing_config_path: str = "app/config/routing.json",
+    ) -> None:
+        self._routing_config_path = Path(routing_config_path)
+        self._routing_config = self._load_config()
 
-    def select(self, request: GenerationRequest) -> str:
+    def _load_config(self) -> dict[str, dict[str, str]]:
+        if not self._routing_config_path.exists():
+            raise FileNotFoundError(
+                f"Routing configuration not found: {self._routing_config_path}"
+            )
+
+        with self._routing_config_path.open(
+            "r",
+            encoding="utf-8",
+        ) as config_file:
+            return json.load(config_file)
+
+    def select(
+        self,
+        request: GenerationRequest,
+    ) -> tuple[str, str]:
         if request.model:
-            return request.model
+            return "openrouter", request.model
 
-        task_models: dict[TaskType, str] = {
-            TaskType.GENERAL: self._settings.default_model,
-            TaskType.ANALYSIS: self._settings.default_model,
-            TaskType.SUMMARIZATION: self._settings.default_model,
-            TaskType.GENERATION: self._settings.default_model,
-            TaskType.REASONING: self._settings.default_model,
-        }
+        task_name = request.task.value
 
-        return task_models.get(
-            request.task,
-            self._settings.default_model,
+        route = self._routing_config.get(
+            task_name,
+            self._routing_config["general"],
         )
+
+        return route["provider"], route["model"]

@@ -9,7 +9,9 @@ from app.schemas.request import GenerationRequest
 @dataclass(frozen=True)
 class RouteDecision:
     provider: AIProvider
+    provider_name: str
     model: str
+    task: str
 
 
 class RouterEngine:
@@ -25,10 +27,13 @@ class RouterEngine:
         self,
         request: GenerationRequest,
     ) -> RouteDecision:
-        provider = self._provider_selector.select()
-        model = self._model_selector.select(request)
+        provider_name, model = self._model_selector.select(request)
+
+        provider = self._provider_selector.select(provider_name)
 
         return RouteDecision(
             provider=provider,
+            provider_name=provider_name,
             model=model,
+            task=request.task.value,
         )

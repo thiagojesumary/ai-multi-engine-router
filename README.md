@@ -1,5 +1,5 @@
 # AI Multi-Engine Router
-Production-ready Python/FastAPI AI router with provider abstraction, model routing, fallback strategies and telemetry.
+Production-ready Python/FastAPI router for multi-provider LLM orchestration, intelligent model routing, automatic fallback and telemetry.
 
 AI Multi-Engine Router
 

@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from app.api.generate import router as generation_router
+
 app = FastAPI(
     title="AI Multi-Engine Router",
     version="0.1.0",
@@ -8,6 +10,8 @@ app = FastAPI(
         "model routing, fallback strategies, and telemetry."
     ),
 )
+
+app.include_router(generation_router)
 
 
 @app.get("/", tags=["System"])
@@ -21,6 +25,4 @@ async def root() -> dict[str, str]:
 
 @app.get("/health", tags=["System"])
 async def health() -> dict[str, str]:
-    return {
-        "status": "healthy",
-    }
+    return {"status": "healthy"}

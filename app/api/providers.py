@@ -1,8 +1,7 @@
 from fastapi import APIRouter
 
 from app.core.settings import get_settings
-from app.providers.openrouter import OpenRouterProvider
-from app.providers.registry import ProviderRegistry
+from app.providers.bootstrap import build_provider_registry
 
 router = APIRouter(
     prefix="/v1",
@@ -13,12 +12,7 @@ router = APIRouter(
 @router.get("/providers")
 async def list_providers() -> dict[str, list[dict[str, object]]]:
     settings = get_settings()
-
-    registry = ProviderRegistry(
-        providers=[
-            OpenRouterProvider(settings),
-        ]
-    )
+    registry = build_provider_registry(settings)
 
     return {
         "providers": [

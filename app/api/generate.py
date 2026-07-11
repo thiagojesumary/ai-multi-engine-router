@@ -4,11 +4,9 @@ from pydantic import ValidationError
 
 from app.core.container import get_telemetry_service
 from app.core.settings import get_settings
-from app.providers.mock import MockProvider
+from app.providers.bootstrap import build_provider_registry
 from app.providers.model_selector import ModelSelector
-from app.providers.openrouter import OpenRouterProvider
 from app.providers.provider_selector import ProviderSelector
-from app.providers.registry import ProviderRegistry
 from app.router.engine import RouterEngine
 from app.schemas.request import GenerationRequest
 from app.schemas.response import GenerationResponse
@@ -31,12 +29,7 @@ async def generate(
     try:
         settings = get_settings()
 
-        registry = ProviderRegistry(
-            providers=[
-                OpenRouterProvider(settings),
-                MockProvider(),
-            ]
-        )
+        registry = build_provider_registry(settings)
 
         provider_selector = ProviderSelector(
             registry=registry,
@@ -67,13 +60,13 @@ async def generate(
     except httpx.HTTPStatusError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"OpenRouter returned HTTP {exc.response.status_code}.",
+            detail=f"Provider returned HTTP {exc.response.status_code}.",
         ) from exc
 
     except httpx.RequestError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Could not connect to OpenRouter.",
+            detail="Could not connect to the AI provider.",
         ) from exc
 
     except Exception as exc:

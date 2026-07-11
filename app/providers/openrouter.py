@@ -4,6 +4,7 @@ import httpx
 
 from app.core.settings import Settings
 from app.providers.base import AIProvider
+from app.providers.sdk import ProviderFactory
 from app.schemas.request import GenerationRequest
 
 
@@ -18,9 +19,6 @@ class OpenRouterProvider(AIProvider):
         request: GenerationRequest,
         model: str,
     ) -> str:
-        # TEMPORÁRIO: força o OpenRouter a falhar para testar o MockProvider.
-        #raise RuntimeError("Simulating provider failure")
-
         url = f"{self._settings.openrouter_base_url}/chat/completions"
 
         headers = {
@@ -67,3 +65,6 @@ class OpenRouterProvider(AIProvider):
             )
 
         return content
+
+
+ProviderFactory.register(OpenRouterProvider)

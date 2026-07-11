@@ -1,19 +1,22 @@
 from time import perf_counter
 
-from app.core.settings import Settings
+from app.providers.registry import ProviderRegistry
 from app.router.engine import RouterEngine
 from app.schemas.request import GenerationRequest
 from app.schemas.response import GenerationResponse
+from app.telemetry.service import TelemetryService
 
 
 class GenerationService:
     def __init__(
         self,
         router_engine: RouterEngine,
-        settings: Settings,
+        provider_registry: ProviderRegistry,
+        telemetry_service: TelemetryService,
     ) -> None:
         self._router_engine = router_engine
-        self._settings = settings
+        self._provider_registry = provider_registry
+        self._telemetry_service = telemetry_service
 
     async def generate(
         self,
@@ -21,47 +24,64 @@ class GenerationService:
     ) -> GenerationResponse:
         decision = self._router_engine.route(request)
 
-        started_at = perf_counter()
+        provider_names = [decision.provider_name]
 
-        try:
-            content = await decision.provider.generate(
-                request=request,
-                model=decision.model,
-            )
+        if (
+            decision.provider_name != "mock"
+            and self._provider_registry.exists("mock")
+        ):
+            provider_names.append("mock")
 
-            latency_ms = int(
-                (perf_counter() - started_at) * 1000
-            )
+        last_exception: Exception | None = None
 
-            return GenerationResponse(
-                provider=decision.provider.name,
-                model=decision.model,
-                latency_ms=latency_ms,
-                fallback=False,
-                response=content,
-            )
+        for index, provider_name in enumerate(provider_names):
+            provider = self._provider_registry.get(provider_name)
+            fallback = index > 0
+            started_at = perf_counter()
 
-        except Exception:
-            fallback_model = self._settings.fallback_model
+            try:
+                content = await provider.generate(
+                    request=request,
+                    model=decision.model,
+                )
 
-            if fallback_model == decision.model:
-                raise
+                latency_ms = int(
+                    (perf_counter() - started_at) * 1000
+                )
 
-            fallback_started_at = perf_counter()
+                self._telemetry_service.record_success(
+                    provider=provider.name,
+                    model=decision.model,
+                    task=decision.task,
+                    latency_ms=latency_ms,
+                    fallback=fallback,
+                )
 
-            content = await decision.provider.generate(
-                request=request,
-                model=fallback_model,
-            )
+                return GenerationResponse(
+                    provider=provider.name,
+                    model=decision.model,
+                    latency_ms=latency_ms,
+                    fallback=fallback,
+                    response=content,
+                )
 
-            latency_ms = int(
-                (perf_counter() - fallback_started_at) * 1000
-            )
+            except Exception as exc:
+                latency_ms = int(
+                    (perf_counter() - started_at) * 1000
+                )
 
-            return GenerationResponse(
-                provider=decision.provider.name,
-                model=fallback_model,
-                latency_ms=latency_ms,
-                fallback=True,
-                response=content,
-            )
+                self._telemetry_service.record_failure(
+                    provider=provider.name,
+                    model=decision.model,
+                    task=decision.task,
+                    latency_ms=latency_ms,
+                    fallback=fallback,
+                    error_type=type(exc).__name__,
+                )
+
+                last_exception = exc
+
+        if last_exception is not None:
+            raise last_exception
+
+        raise RuntimeError("No providers available for generation.")

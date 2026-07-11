@@ -18,6 +18,9 @@ class OpenRouterProvider(AIProvider):
         request: GenerationRequest,
         model: str,
     ) -> str:
+        # TEMPORÁRIO: força o OpenRouter a falhar para testar o MockProvider.
+        #raise RuntimeError("Simulating provider failure")
+
         url = f"{self._settings.openrouter_base_url}/chat/completions"
 
         headers = {
@@ -37,7 +40,9 @@ class OpenRouterProvider(AIProvider):
             "max_tokens": request.max_tokens,
         }
 
-        timeout = httpx.Timeout(self._settings.request_timeout_seconds)
+        timeout = httpx.Timeout(
+            self._settings.request_timeout_seconds
+        )
 
         async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.post(
@@ -57,6 +62,8 @@ class OpenRouterProvider(AIProvider):
             ) from exc
 
         if not isinstance(content, str) or not content.strip():
-            raise RuntimeError("OpenRouter returned an empty response.")
+            raise RuntimeError(
+                "OpenRouter returned an empty response."
+            )
 
         return content

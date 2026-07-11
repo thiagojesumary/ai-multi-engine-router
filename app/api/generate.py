@@ -2,7 +2,9 @@ import httpx
 from fastapi import APIRouter, HTTPException, status
 from pydantic import ValidationError
 
+from app.core.container import get_telemetry_service
 from app.core.settings import get_settings
+from app.providers.mock import MockProvider
 from app.providers.model_selector import ModelSelector
 from app.providers.openrouter import OpenRouterProvider
 from app.providers.provider_selector import ProviderSelector
@@ -32,6 +34,7 @@ async def generate(
         registry = ProviderRegistry(
             providers=[
                 OpenRouterProvider(settings),
+                MockProvider(),
             ]
         )
 
@@ -49,7 +52,8 @@ async def generate(
 
         service = GenerationService(
             router_engine=router_engine,
-            settings=settings,
+            provider_registry=registry,
+            telemetry_service=get_telemetry_service(),
         )
 
         return await service.generate(request)
@@ -63,10 +67,7 @@ async def generate(
     except httpx.HTTPStatusError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=(
-                f"OpenRouter returned HTTP "
-                f"{exc.response.status_code}."
-            ),
+            detail=f"OpenRouter returned HTTP {exc.response.status_code}.",
         ) from exc
 
     except httpx.RequestError as exc:

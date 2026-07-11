@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api.telemetry import router as telemetry_router
 from app.api.generate import router as generation_router
 from app.api.providers import router as providers_router
+from app.api.scores import router as scores_router
 
 app = FastAPI(
     title="AI Multi-Engine Router",
@@ -15,6 +16,7 @@ app = FastAPI(
 app.include_router(generation_router)
 app.include_router(providers_router)
 app.include_router(telemetry_router)
+app.include_router(scores_router)
 
 @app.get("/", tags=["System"])
 async def root() -> dict[str, str]:

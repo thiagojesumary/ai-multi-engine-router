@@ -353,6 +353,139 @@ Use one of the Quick Prompts
 - Fallback
 - Response
 
+# Example Prompts
+
+The following prompts can be used to explore the capabilities of the AI Multi-Engine Router through the Mission Control Playground.
+
+They exercise routing, telemetry, provider selection, automatic fallback, architecture analysis and code generation while producing real telemetry events.
+
+1️⃣ Explain Telemetry
+
+Explain why telemetry is essential in a multi-provider AI router and which metrics should be collected to continuously improve routing decisions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2️⃣ Automatic Fallback
+
+Explain how automatic fallback should behave when the primary AI provider becomes unavailable during a production request.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3️⃣ Production Routing
+
+Design an enterprise AI routing strategy capable of intelligently selecting providers based on latency, reasoning quality, availability and operational cost.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4️⃣ Provider Comparison
+
+Compare OpenRouter, Groq, Cerebras, Gemini, Hugging Face, DeepSeek and Ollama considering:
+
+• Speed
+• Latency
+• Reasoning
+• Coding
+• Cost
+• Reliability
+
+Provide a final ranking.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5️⃣ Mission Control
+
+Describe the responsibilities of a Mission Control dashboard responsible for monitoring an AI routing infrastructure in real time.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6️⃣ AI Infrastructure
+
+Design the architecture of an enterprise AI platform supporting multiple providers, automatic fallback, telemetry, scoring, health monitoring and observability.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7️⃣ FastAPI
+
+Generate a production-ready FastAPI endpoint implementing provider routing using dependency injection and a provider registry.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8️⃣ Next.js
+
+Generate a Mission Control dashboard using Next.js, TypeScript, TailwindCSS and Framer Motion for monitoring an AI routing infrastructure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9️⃣ Telemetry Analytics
+
+Explain how telemetry data can be used to optimize provider selection, reduce latency and improve routing reliability over time.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔟 Executive Summary
+
+Summarize the AI Multi-Engine Router for a CTO evaluating enterprise AI infrastructure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣1️⃣ LinkedIn Post
+
+Write a professional LinkedIn announcement introducing the AI Multi-Engine Router as an open-source project.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣2️⃣ README Generator
+
+Generate a professional GitHub README describing an enterprise AI routing infrastructure with telemetry, provider scoring and Mission Control.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣3️⃣ Failure Simulation
+
+Simulate the failure of the primary provider and explain, step by step, how the router should recover while maintaining service availability.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣4️⃣ Provider Intelligence
+
+Explain how provider scoring should evolve over time using telemetry, historical latency, failures and success rate.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣5️⃣ Future Roadmap
+
+Propose the next major features for AI Multi-Engine Router over the next four public releases.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣6️⃣ Architecture Review
+
+Review the architecture of an AI Multi-Engine Router and identify strengths, bottlenecks and opportunities for future scalability.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣7️⃣ Python Code Generation
+
+Generate production-quality Python code implementing an asynchronous provider registry with automatic fallback and telemetry events.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣8️⃣ Stress Test
+
+Describe how the router should behave while processing 10,000 concurrent requests across multiple AI providers.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣9️⃣ Observability
+
+Explain why observability, telemetry and health monitoring are critical components of enterprise AI infrastructure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2️⃣0️⃣ The Vision
+
+Explain how an AI Multi-Engine Router could become the cognitive infrastructure behind autonomous AI platforms such as Nexum.
+
 ---
 
 # Available Tasks

@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-feature-settings: "tnum" 1, "cv11" 1;
+}
+
+::selection {
+  background: rgba(0, 212, 255, 0.25);
+  color: #f5f7fa;
+}
+
+/* Tabular numerals for every metric so digits never jitter on update */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+/* Hairline grid backdrop used behind the operations core */
+.mc-grid {
+  background-image:
+    linear-gradient(rgba(139, 151, 168, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 151, 168, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.mc-radial-mask {
+  -webkit-mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
+  mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

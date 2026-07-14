@@ -1,8 +1,10 @@
 # 🧠 AI Multi-Engine Router
 
-> Enterprise-grade open-source AI routing infrastructure built with **FastAPI** and **Next.js**.
+### Intelligent Multi-Provider AI Routing Infrastructure
 
-An open-source AI Router that intelligently selects the best provider for each task, performs automatic fallback, collects real-time telemetry and exposes everything through a Mission Control dashboard.
+Real-time telemetry • Automatic fallback • Provider scoring • Mission Control dashboard
+
+An enterprise-grade open-source platform for routing AI requests across multiple providers, monitoring operational health in real time, and providing a unified Mission Control experience for observability and intelligent provider orchestration.
 
 ---
 

@@ -14,7 +14,7 @@ Explore the AI Multi-Engine Router through its real-time Mission Control interfa
 
 ### 🧠 Mission Control Dashboard
 
-<img src="docs/images/dashboard.png" width="100%" alt="Mission Control Dashboard"/>
+<img src="docs/images/dashboard.jpg" width="100%" alt="Mission Control Dashboard"/>
 
 
 # Features

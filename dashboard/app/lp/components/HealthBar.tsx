@@ -1,9 +1,10 @@
 "use client";
 
 import { Server, GitMerge, Activity, Cpu, Database, Cog } from "lucide-react";
-import type { ConnState, HealthSnapshot, SubsystemStatus } from "../lib/types";
+import type { ConnState, HealthSnapshot, Provider, RouterMetrics, TelemetrySnapshot, SubsystemStatus,} from "../lib/types";
 import { StatusLabel } from "./StatusPill";
 import { LoadingState, ErrorState, OfflineState } from "./StateViews";
+import { RuntimeCards } from "./RuntimeCards";
 
 const SUBSYSTEMS: { key: keyof HealthSnapshot; label: string; icon: React.ElementType }[] = [
   { key: "api", label: "API Gateway", icon: Server },
@@ -53,10 +54,16 @@ export function HealthBar({
 
 export function HealthView({
   health,
+  metrics,
+  providers,
+  telemetry,
   state,
   onRetry,
 }: {
   health: HealthSnapshot | null;
+  metrics: RouterMetrics | null;
+  providers: Provider[];
+  telemetry: TelemetrySnapshot | null;
   state: ConnState;
   onRetry: () => void;
 }) {
@@ -80,24 +87,16 @@ export function HealthView({
     <div className="flex h-full flex-col rounded-xl border border-line/70 bg-panel/50 p-6">
       <div className="mb-6 flex items-center justify-between">
         <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
-          Subsystem health — GET /health
+          Runtime Health — Operational Overview
         </span>
         <StatusLabel status={overall} />
       </div>
-      <div className="grid flex-1 grid-cols-3 gap-4">
-        {SUBSYSTEMS.map(({ key, label, icon: Icon }) => (
-          <div
-            key={key}
-            className="flex flex-col justify-between rounded-xl border border-line/60 bg-void/40 p-5 transition hover:border-cyan/30"
-          >
-            <div className="flex items-center justify-between">
-              <Icon className="h-5 w-5 text-cyan" />
-              <StatusLabel status={health[key]} />
-            </div>
-            <p className="mt-6 font-display text-sm text-ink">{label}</p>
-          </div>
-        ))}
-      </div>
+      <RuntimeCards
+       health={health}
+        metrics={metrics}
+        providers={providers}
+        telemetry={telemetry}
+    />
     </div>
   );
 }

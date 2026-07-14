@@ -103,10 +103,17 @@ export default function MissionControlPage() {
             )}
 
             {view === "health" && (
-              <PanelFade key="health">
-                <HealthView health={health.data} state={health.state} onRetry={health.retry} />
-              </PanelFade>
-            )}
+            <PanelFade key="health">
+              <HealthView
+               health={health.data}
+                metrics={metrics.data}
+                providers={providers.data ?? []}
+                telemetry={telemetry.data}
+                state={health.state}
+                onRetry={health.retry}
+               />
+             </PanelFade>
+)}
           </AnimatePresence>
         </main>
       </div>
